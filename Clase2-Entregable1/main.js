@@ -24,83 +24,87 @@ Al agregarlo, debe crearse con un id autoincrementable
 * Debe contar con un método “getProductById” el cual debe buscar en el arreglo el producto que coincida con el id
 En caso de no coincidir ningún id, mostrar en consola un error “Not found”
 */
+
 class ProductManager {
-    constructor() {
-      this.products = []; // Consigna
-      this.productIdCounter = 1;
+  constructor() {
+    this.products = [];
+    this.productIdCounter = 1;
+  }
+
+  addProduct(product) {
+    const { title, description, price, thumbnail, code, stock } = product;
+
+    if (!title || !description || !price || !thumbnail || !code || !stock) {
+      throw new Error('Todos los campos son obligatorios');
     }
-  
-    addProduct(product) {
-      const { title, description, price, thumbnail, code, stock } = product;
-  
-      // Validacion
-      if (!title || !description || !price || !thumbnail || !code || !stock) {
-        throw new Error('Todos los campos son obligatorios');
-      }
-  
-      // Verificar si ya está en uso
-      const existingProduct = this.products.find((p) => p.code === code);
-      if (existingProduct) {
-        throw new Error('El código del producto ya está en uso');
-      }
-  
-      const newProduct = {
-        id: this.productIdCounter++,
-        title,
-        description,
-        price,
-        thumbnail,
-        code,
-        stock
-      };
-  
-      this.products.push(newProduct);
+
+    const existingProduct = this.products.find((p) => p.code === code);
+    if (existingProduct) {
+      throw new Error('El código del producto ya está en uso');
     }
-  
-    getProducts() {
-      return this.products;
-    }
-  
-    getProductById(id) {
-      const product = this.products.find((p) => p.id === id);
-      if (!product) {
-        console.error('Not found');
+
+    const newProduct = {
+      id: this.productIdCounter++,
+      title,
+      description,
+      price,
+      thumbnail,
+      code,
+      stock
+    };
+
+    this.products.push(newProduct);
+    console.log('Producto agregado:', newProduct);
+  }
+
+  getProducts() {
+    return this.products;
+  }
+
+  getProductById(id) {
+    try {
+      const product = this.products.find((dato) => dato.id === id);
+
+      if (product !== undefined) {
+        return product;
       }
-      return product;
+
+      throw new Error('No existe el producto solicitado');
+    } catch (error) {
+      console.log(error);
+      return 'No existe el producto solicitado';
     }
   }
-  
-  const productManager = new ProductManager();
-
-  try {
-  productManager.addProduct({
-    title: "Producto 1",
-    description: "Descripción del producto 1",
-    price: 10.99,
-    thumbnail: "imagen1.jpg",
-    code: "001",
-    stock: 20,
-  });
-
-  productManager.addProduct({
-    title: "Producto 2",
-    description: "Descripción del producto 2",
-    price: 15.49,
-    thumbnail: "imagen2.jpg",
-    code: "002",
-    stock: 15,
-  });
-} catch (error) {
-  console.error(error.message);
 }
 
-const allProducts = productManager.getProducts();
-console.log(allProducts);
+const productManager = new ProductManager();
 
+productManager.addProduct({
+  title: "Producto 1",
+  description: "Descripción del producto 1",
+  price: 10.99,
+  thumbnail: "imagen1.jpg",
+  code: "001",
+  stock: 20,
+});
+
+productManager.addProduct({
+  title: "Producto 2",
+  description: "Descripción del producto 2",
+  price: 15.49,
+  thumbnail: "imagen2.jpg",
+  code: "002",
+  stock: 15,
+});
+
+const productsList = productManager.getProducts();
+console.log(productsList);
 
 const productIdToFind = 1;
-const productFound = productManager.getProductById(productIdToFind);
-console.log(productFound);
+const foundProduct = productManager.getProductById(productIdToFind);
+console.log(foundProduct);
 
 const nonExistentProductId = 100;
-const productNotFound = productManager.getProductById(nonExistentProductId);
+const notFoundProduct = productManager.getProductById(nonExistentProductId);
+
+
